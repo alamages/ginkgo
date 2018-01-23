@@ -83,6 +83,21 @@ func ginkgoCommand(dir string, args ...string) *exec.Cmd {
 	return cmd
 }
 
+func ginkgoCommandWithEnv(env []string, dir string, args ...string) *exec.Cmd {
+	cmd := exec.Command(pathToGinkgo, args...)
+	cmd.Dir = dir
+	cmd.Env = env
+
+	return cmd
+}
+
+func startGinkgoWithEnv(env []string, dir string, args ...string) *gexec.Session {
+	cmd := ginkgoCommandWithEnv(env, dir, args...)
+	session, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
+	Ω(err).ShouldNot(HaveOccurred())
+	return session
+}
+
 func startGinkgo(dir string, args ...string) *gexec.Session {
 	cmd := ginkgoCommand(dir, args...)
 	session, err := gexec.Start(cmd, GinkgoWriter, GinkgoWriter)
